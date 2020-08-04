@@ -6,6 +6,7 @@
       dark
     >
       Cycling Thingy
+      <v-file-input v-model="file" accept=".gpx" label="Select a file" hide-details/>
     </v-app-bar>
 
     <v-main  v-if="validRide">
@@ -68,7 +69,8 @@ export default {
   name: 'App',
 
   data: () => ({
-    gpx: {}
+    gpx: {},
+    file: null
   }),
   computed: {
     distance() {
@@ -120,14 +122,30 @@ export default {
       return this.gpx.hasOwnProperty('trk') && this.gpx.hasOwnProperty('metadata');
     }
   },
+  watch: {
+    async file(f) {
+      if (!f) {
+        return;
+      }
+
+      const text = await f.text();
+      this.parse(text);
+      this.file = null;
+    }
+  },
   async mounted() {
     const data = await fetch('example.gpx');
     const text = await data.text();
-    const parsed = xmlParse.parse(text, {
-      ignoreAttributes: false,
-      parseAttributeValue: true
-    });
-    this.gpx = parsed.gpx;
+    this.parse(text);
+  },
+  methods: {
+    parse(text) {
+      const parsed = xmlParse.parse(text, {
+        ignoreAttributes: false,
+        parseAttributeValue: true
+      });
+      this.gpx = parsed.gpx;
+    }
   }
 };
 </script>
