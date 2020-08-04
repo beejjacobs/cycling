@@ -43,22 +43,7 @@
           </tr>
         </v-simple-table>
       </v-card>
-      <v-simple-table class="table-1">
-        <tr class="text-left">
-          <th>Elevation Change m</th>
-          <th>Time s</th>
-          <th>Distance m</th>
-          <th>Speed m/s</th>
-          <th>Speed km/h</th>
-        </tr>
-        <tr v-for="(s, i) in segments" :key="i">
-          <td>{{ s.elevationGain.toFixed(4) }}</td>
-          <td>{{ s.timeElapsed }}</td>
-          <td>{{ s.distance.toFixed(4) }}</td>
-          <td>{{ s.speed.toFixed(4) }}</td>
-          <td>{{ s.kmph.toFixed(4) }}</td>
-        </tr>
-      </v-simple-table>
+      <segments class="mx-2" :segments="segments"/>
     </v-main>
   </v-app>
 </template>
@@ -68,10 +53,11 @@ import xmlParse from 'fast-xml-parser';
 import {Point} from './util/point';
 import moment from 'moment';
 import {Segment} from './util/segment';
+import Segments from './components/Segments';
 /*eslint no-prototype-builtins: "off"*/
 export default {
   name: 'App',
-
+  components: {Segments},
   data: () => ({
     gpx: {},
     file: null
