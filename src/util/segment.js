@@ -1,28 +1,33 @@
-import moment from 'moment';
-import LatLon from 'geodesy/latlon-spherical.js';
-
 export class Segment {
-  constructor(data) {
-    this.data = data;
+  s1;
+  s2;
+
+  /**
+   * @param {Point} s1
+   * @param {Point} s2
+   */
+  constructor(s1, s2) {
+    this.s1 = s1;
+    this.s2 = s2;
   }
 
-  get lat() {
-    return this.data['@_lat'];
+  get elevationGain() {
+    return this.s2.elevation - this.s1.elevation;
   }
 
-  get lon() {
-    return this.data['@_lon'];
+  get timeElapsed() {
+    return this.s2.time.diff(this.s1.time, 'second');
   }
 
-  get latLon() {
-    return new LatLon(this.lat, this.lon);
+  get distance() {
+    return this.s1.latLon.distanceTo(this.s2.latLon);
   }
 
-  get elevation() {
-    return this.data['ele'];
+  get speed() {
+    return this.distance / this.timeElapsed;
   }
 
-  get time() {
-    return moment(this.data['time']);
+  get kmph() {
+    return this.speed * 3.6;
   }
 }

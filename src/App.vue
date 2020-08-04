@@ -19,7 +19,7 @@
           </tr>
           <tr>
             <td>Segments</td>
-            <td>{{ segments.length }}</td>
+            <td>{{ points.length }}</td>
           </tr>
           <tr>
             <td>Distance</td>
@@ -51,7 +51,7 @@
           <th>Speed m/s</th>
           <th>Speed km/h</th>
         </tr>
-        <tr v-for="(s, i) in segmentPairs" :key="i">
+        <tr v-for="(s, i) in segments" :key="i">
           <td>{{ s.elevationGain.toFixed(4) }}</td>
           <td>{{ s.timeElapsed }}</td>
           <td>{{ s.distance.toFixed(4) }}</td>
@@ -65,9 +65,9 @@
 
 <script>
 import xmlParse from 'fast-xml-parser';
-import {Segment} from './util/segment';
+import {Point} from './util/point';
 import moment from 'moment';
-import {SegmentPair} from './util/segment-pair';
+import {Segment} from './util/segment';
 /*eslint no-prototype-builtins: "off"*/
 export default {
   name: 'App',
@@ -78,10 +78,10 @@ export default {
   }),
   computed: {
     distance() {
-      return this.segmentPairs.reduce((acc, v) => acc + v.distance, 0);
+      return this.segments.reduce((acc, v) => acc + v.distance, 0);
     },
     elevationGain() {
-      return this.segmentPairs.reduce((acc, v) => {
+      return this.segments.reduce((acc, v) => {
         if (v.elevationGain > 0) {
           return acc + v.elevationGain;
         }
@@ -89,7 +89,7 @@ export default {
       }, 0);
     },
     elevationDrop() {
-      return this.segmentPairs.reduce((acc, v) => {
+      return this.segments.reduce((acc, v) => {
         if (v.elevationGain < 0) {
           return acc + v.elevationGain;
         }
@@ -106,22 +106,22 @@ export default {
       return moment(this.gpx.metadata.time).format('L LT');
     },
     maxSpeed() {
-      return Math.max(...this.segmentPairs.map(s => s.kmph));
+      return Math.max(...this.segments.map(s => s.kmph));
+    },
+    points() {
+      if (!this.validRide) {
+        return [];
+      }
+      return this.gpx.trk.trkseg.trkpt.map(s => new Point(s));
     },
     segments() {
       if (!this.validRide) {
         return [];
       }
-      return this.gpx.trk.trkseg.trkpt.map(s => new Segment(s));
-    },
-    segmentPairs() {
-      if (!this.validRide) {
-        return [];
-      }
       const pairs = [];
-      const segs = this.segments;
+      const segs = this.points;
       for (let i = 0; i < (segs.length - 1); i++) {
-        pairs.push(new SegmentPair(segs[i], segs[i + 1]))
+        pairs.push(new Segment(segs[i], segs[i + 1]))
       }
       return pairs;
     },
