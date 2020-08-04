@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import './plugins/charts';
 import './plugins/moment';
 import vuetify from './plugins/vuetify';
 

@@ -43,6 +43,9 @@
           </tr>
         </v-simple-table>
       </v-card>
+      <elevation class="mx-2" :points="points"/>
+      <speed class="mx-2" :segments="segments"/>
+      <route class="mx-2" :points="points"/>
       <segments class="mx-2" :segments="segments"/>
     </v-main>
   </v-app>
@@ -54,10 +57,13 @@ import {Point} from './util/point';
 import moment from 'moment';
 import {Segment} from './util/segment';
 import Segments from './components/Segments';
+import Elevation from './components/Elevation';
+import Route from './components/Route';
+import Speed from './components/Speed';
 /*eslint no-prototype-builtins: "off"*/
 export default {
   name: 'App',
-  components: {Segments},
+  components: {Speed, Route, Elevation, Segments},
   data: () => ({
     gpx: {},
     file: null
