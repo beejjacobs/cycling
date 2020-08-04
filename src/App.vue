@@ -37,6 +37,10 @@
             <td>Elevation Change</td>
             <td>{{ elevationNet.toFixed(4) }} m</td>
           </tr>
+          <tr>
+            <td>Max Speed</td>
+            <td>{{ maxSpeed.toFixed(4) }} km/h</td>
+          </tr>
         </v-simple-table>
       </v-card>
       <v-simple-table class="table-1">
@@ -100,6 +104,9 @@ export default {
         return '';
       }
       return moment(this.gpx.metadata.time).format('L LT');
+    },
+    maxSpeed() {
+      return Math.max(...this.segmentPairs.map(s => s.kmph));
     },
     segments() {
       if (!this.validRide) {
